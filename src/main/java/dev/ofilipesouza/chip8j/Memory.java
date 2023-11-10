@@ -1,12 +1,14 @@
 package dev.ofilipesouza.chip8j;
 
+import javax.swing.*;
 import java.util.Arrays;
+import java.util.Random;
 
 public class Memory {
 
     private short[] stack = new short[16];
-    private byte[] memory = new byte[4096];
-    public boolean[][] pixels;
+    public int[] memory = new int[4096];
+    public int[][] pixels;
     boolean drawFlag;
     private final int[] FONT_SET = {
             0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
@@ -28,24 +30,24 @@ public class Memory {
     };
 
     public Memory() {
-        this.pixels = new boolean[64][32];
+        this.pixels = new int[64][32];
         loadFontSetOnMemory ();
     }
 
     private void loadFontSetOnMemory() {
         for(short i = 0; i < 80; i++){
-            set(i, (byte) FONT_SET[i]);
+            set(i, FONT_SET[i]);
         }
     }
 
-    public void set(short address, byte b){
+    public void set(int address, int b){
         if(address > 4096){
             System.out.println("out of bounds");
         }else{
-            memory[address] = b;
+            memory[address] = (b & 0xFF);
         }
     }
-    public byte get(short address){
+    public int get(int address){
         if(address > 4096){
             System.out.println("out of bounds");
             return 0x0;
@@ -53,11 +55,25 @@ public class Memory {
             return memory[address];
         }
     }
+    public void setPixel(int x, int y) {
+        pixels[x][y] ^= 1;
+    }
+
+    public int getPixel(int x, int y) {
+        return pixels[x][y];
+    }
+
 
     @Override
     public String toString() {
         return "Memory{" +
                 "memory=" + Arrays.toString(memory) +
                 '}';
+    }
+
+    public void loadProgram(byte[] b) {
+        for(int i = 0; i<b.length; i++) {
+            memory[i + 512] =  b[i] & 0xFF;
+        }
     }
 }

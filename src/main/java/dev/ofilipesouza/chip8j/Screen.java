@@ -34,10 +34,11 @@ public class Screen extends JPanel {
                 paintPixel(x,y);
             }
         }
+        paintScreen();
     }
 
     public void paintPixel(int x, int y){
-        if(memory.pixels[x][y]){
+        if(memory.pixels[x][y] ==  1){
             g.setColor(Color.WHITE);
         }else{
             g.setColor(Color.BLACK);

@@ -2,6 +2,9 @@ package dev.ofilipesouza.chip8j;
 
 import javax.swing.*;
 import java.io.*;
+import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.Random;
 
 public class Chip8 {
 
@@ -28,26 +31,31 @@ public class Chip8 {
         frame.setVisible(true);
     }
 
-    public void loadProgram(String program) {
-        try {
-            File file = new File(program);
-            DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(file)));
-            byte[] b = new byte[(int) file.length()];
-            in.read(b);
+    public void loadProgram(String program) throws IOException {
 
-            loadProgramOnMemory(b);
+        File file = new File(program);
+        byte[] bytes = Files.readAllBytes(file.toPath());
+        short currentAddress = (short)0x200;
+        int loadedBytes = 0;
+        for(byte b: bytes){
+            memory.set(currentAddress,b);
+            loadedBytes++;
+            currentAddress = (short)(currentAddress +0x1);
 
-        } catch (IOException e) {
-            e.printStackTrace();
         }
- }
+        System.out.println("[INFO] ROM \"" + program + "\" loaded in memory starting at 0x200 ("+loadedBytes+" Bytes).");
 
-    private void loadProgramOnMemory(byte[] b){
-        for(int i = 0; i<b.length; i++) {
-            memory.set((short) (i + register.PROGRAM_COUNTER), b[i]);
-        }
     }
-    public void initiateEmulationCycle() {
 
+    public void initiateEmulationCycle() {
+        while (true){
+            cpu.fetch();
+            cpu.decodeAndExecute();
+
+            if(memory.drawFlag){
+                screen.paintScreen();
+                memory.drawFlag = false;
+            }
+        }
     }
 }
