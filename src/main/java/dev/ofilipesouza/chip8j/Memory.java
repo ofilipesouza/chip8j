@@ -1,8 +1,6 @@
 package dev.ofilipesouza.chip8j;
 
-import javax.swing.*;
 import java.util.Arrays;
-import java.util.Random;
 
 public class Memory {
 
@@ -71,9 +69,4 @@ public class Memory {
                 '}';
     }
 
-    public void loadProgram(byte[] b) {
-        for(int i = 0; i<b.length; i++) {
-            memory[i + 512] =  b[i] & 0xFF;
-        }
-    }
 }

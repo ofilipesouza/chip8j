@@ -37,10 +37,24 @@ public class ProcessorTest {
 
     @Test
     void loadByteToVx() {
+        int x = 2;
+        int vx = 2;
+
+        processor.loadByteToVx(x, vx);
+
+        Assertions.assertEquals(register.V[x], vx);
     }
 
     @Test
     void putByteOnVx() {
+        int x = 2;
+        int vx = 2;
+
+        processor.loadByteToVx(x,vx);
+
+        processor.putByteOnVx(x, vx);
+
+        Assertions.assertEquals(register.V[x], vx + vx);
     }
 
     @Test
